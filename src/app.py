@@ -11,7 +11,6 @@ from flask import Flask
 import requests
 import torch
 import json
-import cv2 as cv
 
 with open("src/config.yaml", 'r') as stream:
     APP_CONFIG = yaml.full_load(stream)
