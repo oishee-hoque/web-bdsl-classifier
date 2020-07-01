@@ -71,6 +71,7 @@ class MainPage extends React.Component {
             url: null,
             isLoading: false,
             selectedOption: null,
+			count: 3
 
         }
     }
@@ -91,6 +92,7 @@ class MainPage extends React.Component {
             file: null,
             imageSelectedC: false,
 			imageSelectedU: false,
+			imageSelected : false,
             predictions: [],
             rawFile: null,
             url: ""
@@ -99,7 +101,7 @@ class MainPage extends React.Component {
 
     _predict = async (event) => {
         this.setState({isLoading: true});
-
+        this.setState({imageSelected : true});
         let resPromise = null;
         if (this.state.rawFile) {
             const data = new FormData();
@@ -139,10 +141,20 @@ class MainPage extends React.Component {
     return new Blob([ab], { type: 'image/jpeg' });
 }
 
-
+    timer =()=>{
+		let cnt = this.state.count
+		cnt --;
+		this.setState({ count: cnt});
+	}
   
   _capture = async(event) => {
 	  
+	
+	
+	//setTimeout(this.timer,3000);
+	// setTimeout(this.timer,1000);
+	// setTimeout(this.timer,1000);
+	
 	setTimeout(async()=>{
     const imageSrc = this.webcam.getScreenshot();
 	const l = this.b64toBlob(imageSrc)
@@ -152,6 +164,8 @@ class MainPage extends React.Component {
             file: imageSrc,
             imageSelectedC: true,
 			imageSelectedU: false,
+			imageSelected: false,
+			count: 4
         })
 	this.setState({isLoading: true});
 
@@ -180,7 +194,7 @@ class MainPage extends React.Component {
         } catch (e) {
             alert(e)
         }
-	},1000);
+	},3000);
 		
   };
 
@@ -225,10 +239,10 @@ class MainPage extends React.Component {
 
 
                 <Form>
-				    <div>
-					<div>
+			
+					<div className="rowC">
                     <FormGroup>
-                              <div>
+                              <div  >
                                 <Webcam
                                     audio={false}
                                    // height={350}
@@ -240,16 +254,15 @@ class MainPage extends React.Component {
                                  />
                                
                               </div>
+							   <p hidden={this.state.count==4}> Captures after {this.state.count} seconds</p>
 							   <Button color="success" onClick={this._capture} disabled={this.state.isLoading}>Capture photo</Button>
 							   <span className="p-1 "/>
-                    </FormGroup>
+							  
+                          </FormGroup>
+					
 					</div>
-					<div>
-					<img src={this.state.file} className={"img-preview"} hidden={!this.state.imageSelectedC}/>
-					</div>
+                    <img src={this.state.file} className={"img-preview"} hidden={!this.state.imageSelectedC}/>
 					{this.state.imageSelectedC && this.renderPrediction()}
-					</div>
-
                     <h3>OR</h3>
                     <FormGroup id={"upload_button"}>
                         <div>
@@ -280,7 +293,7 @@ class MainPage extends React.Component {
 
                 </Form>
 
-                {this.state.imageSelectedU && this.renderPrediction()}
+                {this.state.imageSelected && this.renderPrediction()}
 
 
             </div>
